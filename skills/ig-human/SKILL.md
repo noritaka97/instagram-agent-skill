@@ -29,6 +29,28 @@ vocabulary that only shows up in captions and voiceovers. It is meant to be
 edited. If the user has a word they always use that the lexicon strips, take it
 out of the file.
 
+## French drafts
+
+For a draft written in French, pass the French lexicon to both tools:
+
+```bash
+python3 humanize.py brouillon.txt --lexicon slop.fr.json --report
+python3 detect.py brouillon.txt --lexicon slop.fr.json
+```
+
+`slop.fr.json` has the same shape as `slop.json`: 338 stock phrases and 70 words
+with replacements that keep gender, number and tense, 16 structural tells, and
+the Instagram block last. Its `locale` block swaps the English word, pronoun and
+proper-name patterns in `detect.py` for French ones, so accented words are not
+split and `je / tu / nous / vous` count as person. The contraction component is
+neutral for French, because elisions (j'ai, c'est) are grammar, not register.
+Non-breaking spaces and « » are left alone. `humanize.py` still removes the space
+before `? ! : ;`, as it does in English.
+
+These patterns were tuned on a handful of texts, not a corpus. Treat the French
+score as a rough guide and re-read the cleaned text, because chained phrases can
+leave a stilted sentence.
+
 ## Why this matters more on Instagram than it looks
 
 Captions are short and scripts get said out loud. A written-sounding line in a

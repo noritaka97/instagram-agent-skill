@@ -46,6 +46,25 @@ PRONOUNS = re.compile(r"\b(i|me|my|mine|we|us|our|you|your)\b", re.IGNORECASE)
 NUMBERS = re.compile(r"\b\d[\d,.]*%?\b|\$\d")
 PROPER = re.compile(r"(?<![.!?]\s)(?<!^)\b[A-Z][a-z]{2,}\b", re.MULTILINE)
 
+# The four patterns above are English. A lexicon for another language can
+# replace them with an optional "locale" block (see slop.fr.json). Without one,
+# nothing changes: the English patterns stay in force.
+_ENGLISH = (WORD_RE, CONTRACTIONS, PRONOUNS, PROPER)
+
+
+def configure(lex):
+    global WORD_RE, CONTRACTIONS, PRONOUNS, PROPER
+    WORD_RE, CONTRACTIONS, PRONOUNS, PROPER = _ENGLISH
+    loc = lex.get("locale") or {}
+    if "word_re" in loc:
+        WORD_RE = re.compile(loc["word_re"])
+    if "contractions" in loc:
+        CONTRACTIONS = re.compile(loc["contractions"], re.IGNORECASE)
+    if "pronouns" in loc:
+        PRONOUNS = re.compile(loc["pronouns"], re.IGNORECASE)
+    if "proper" in loc:
+        PROPER = re.compile(loc["proper"], re.MULTILINE)
+
 
 def clamp(n):
     return max(0.0, min(100.0, n))
@@ -163,6 +182,7 @@ CHECKS = ["BURSTINESS", "SPECIFICITY", "SLOP DENSITY", "FINGERPRINT", "VOICE"]
 
 
 def run(text, lex):
+    configure(lex)
     results = {}
     results["BURSTINESS"] = check_burstiness(text)
     results["SPECIFICITY"] = check_specificity(text)
