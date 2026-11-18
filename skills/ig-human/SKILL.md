@@ -11,6 +11,8 @@ description: >-
 
 # ig-human
 
+For Turkish-language requests, read [SKILL.tr.md](SKILL.tr.md). The translation documents the existing English-first tool limitations; it does not change the scripts.
+
 Two tools live in this folder and they both actually run. Use them. Do not
 eyeball this.
 
@@ -44,6 +46,13 @@ non-breaking and narrow spaces. A keyboard does not produce these. They survive
 copy-paste, they are invisible in every editor, and they are the most
 mechanical thing in generated text. `humanize.py` deletes every one, including
 any remaining Unicode format character it does not have a name for.
+
+It leaves the ones real text depends on: the joiner inside an emoji sequence
+(family, rainbow flag, a profession with a skin tone), the tags of the England,
+Scotland and Wales flags, the zero-width joiner and non-joiner between letters
+of Persian, Arabic and Indic words, and direction marks in right-to-left text.
+Stripping those does not remove a tell, it breaks the emoji or misspells the
+word.
 
 **2. Typography.** Em dash to comma, en dash to hyphen, curly quotes to
 straight, ellipsis to three dots, bullet character to hyphen. The em dash pass
@@ -88,7 +97,11 @@ PASS, and it is the part a script cannot do.
 
 The verdict weights the mean at 60% and the **weakest single check** at 40%,
 because one signal is enough. PASS needs an overall of 70+ with no check
-below 55.
+below 55. Text with fewer than four sentences or fewer than 25 words gets a
+neutral 50 ("too short to judge") on at least one check, which is under the 55
+floor, so a short caption, comment or DM cannot PASS. Say that rather than
+padding it. A Reel script written one short beat per line usually reads low
+on BURSTINESS; `/ig-reel` explains why.
 
 ## Say this honestly
 

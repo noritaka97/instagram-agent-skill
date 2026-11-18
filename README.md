@@ -1,9 +1,11 @@
-# The Instagram agent skill
+https://l.instagram.com/?u=https%3A%2F%2Fgithub.com%2FJakeschincariol%2Finstagram-agent-skill&e=AUCcS2OhU0hRgHLqBGmClZlaA-hzVd7s03PZXTUYZu3TXHA9ga0Ero_m4hJBSFbemqyZDenvRKI0D7yIT-qTdnKlM331xNNJYilV73cJyg&s=1# The Instagram agent skill
+
+[English](README.md) · [Türkçe](README.tr.md)
 
 Thirteen Claude skills that run an Instagram account. Free, MIT, no signup, no
 API key, nothing to connect.
 
-One of them writes your Reels off 26 hook formulas and scores the hook before
+One of them writes your Reels off 27 hook formulas and scores the hook before
 you waste a take on it. One goes and finds the reels that are actually working
 in your niche and ranks them by how far each beat its own account. One writes
 the caption and shows you exactly what the feed shows before the "... more".
@@ -56,7 +58,7 @@ out loud.
 
 | command | what it does |
 | --- | --- |
-| `/ig-reel` | One idea into a Reel. Three hooks from [26 formulas](skills/ig-reel/hooks.json), scored, then the script, the on-screen text and a timed beat sheet. |
+| `/ig-reel` | One idea into a Reel. Three hooks from [27 formulas](skills/ig-reel/hooks.json), scored, then the script, the on-screen text and a timed beat sheet. |
 | `/ig-viral` | Goes and finds what is working in your niche, ranks it by multiple over each account's own median, names the formula, writes the swipe file. |
 | `/ig-caption` | The caption, linted. Shows you the 125 characters the feed actually shows before the tap. |
 | `/ig-carousel` | Swipe posts. The cover that earns the swipe, slide copy, and the 1080x1350 files. |
@@ -93,6 +95,8 @@ HOOK RANKING
         weakest: STAKES (70)
         dealbreaker: Opens with "stop scrolling". Asking for attention proves
                      you have not earned it.
+        dealbreaker: Emoji in the hook. On-screen text at hook size has room
+                     for words or for an emoji, not both.
      9.6 WEAK    Hey guys, today I wanted to talk about content strategy
         weakest: FRONTLOAD (0)
         dealbreaker: Greeting. Nobody came to the feed to be greeted.
@@ -163,7 +167,10 @@ python3 detect.py before.txt after.txt       # prove the delta
 - **Invisible characters.** Zero-width spaces and joiners, word joiners, soft
   hyphens, byte-order marks, Unicode tag characters, invisible separators,
   non-breaking and narrow spaces. Your keyboard does not make these. They
-  survive copy-paste and they are invisible in every editor you own.
+  survive copy-paste and they are invisible in every editor you own. The ones
+  your text needs stay: emoji sequences like 👨‍👩‍👧 and 🏳️‍🌈, subdivision flags,
+  and the joiners and direction marks Persian, Arabic and Indic scripts spell
+  with.
 - **Typography.** Em dash to comma, en dash to hyphen, curly quotes to
   straight, ellipsis to three dots, and the orphaned punctuation that leaves.
 - **The lexicon.** 154 stock words and phrases with plain-English replacements.
@@ -313,7 +320,7 @@ doing when you read it, Instagram is right.
 ## Files
 
 ```
-skills/ig-reel/hooks.json          26 hook formulas: template, example, on-screen line,
+skills/ig-reel/hooks.json          27 hook formulas: template, example, on-screen line,
                                    what it is for, how it gets ruined, and a match regex
 skills/ig-reel/hookscore.py        the five-property hook panel
 skills/ig-reel/beats.py            script to timed beat sheet

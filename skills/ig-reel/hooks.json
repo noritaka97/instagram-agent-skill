@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "note": "26 hook formulas for Reels. A Reel has two hooks that fire at the same time and they are not the same sentence: the first thing you say, and the first thing on screen. The spoken hook has about two seconds. The on-screen hook has about one, because it is read before it is heard. Every formula here carries a template, a filled example, the on-screen version, what it is for, and the way it usually gets ruined. Each formula also carries a `match` regex, so the same vocabulary can name a hook found in the wild and not only write a new one. Walk them in `classify_order`, which is most specific first, case-insensitive.",
+  "note": "27 hook formulas for Reels. A Reel has two hooks that fire at the same time and they are not the same sentence: the first thing you say, and the first thing on screen. The spoken hook has about two seconds. The on-screen hook has about one, because it is read before it is heard. Every formula here carries a template, a filled example, the on-screen version, what it is for, and the way it usually gets ruined. Each formula also carries a `match` regex, so the same vocabulary can name a hook found in the wild and not only write a new one. Walk them in `classify_order`, which is most specific first, case-insensitive.",
   "rules": [
     "Write the spoken line and the on-screen line separately. On screen is the shorter, blunter one, six words or fewer, no punctuation it does not need.",
     "No setup. The video starts at the sentence you would normally reach at second six.",
@@ -78,7 +78,7 @@
       "on_screen": "YOUR CAPTIONS ARE CUT",
       "best_for": "Teaching. The 'not your fault' half stops it reading as an insult, which is what kills this one.",
       "trap": "Skipping the absolution. 'You are doing it wrong' on its own makes people leave rather than learn.",
-      "match": "\\b(?:big(?:gest)?|common|the) mistake\\b|\\bmistake (?:that|people|i)\\b|\\byou'?(?:re| are) doing\\b[^.!?]*\\bwrong\\b|\\bdoing (?:it|this) wrong\\b"
+      "match": "\\b(?:big(?:gest)?|common|the) mistake\\b|\\bmistake (?:that|people|i)\\b|\\byou'?(?:re| are) \\w+ing\\b[^.!?]*\\bwrong\\b|\\bdoing (?:it|this) wrong\\b"
     },
     {
       "id": 8,
@@ -88,7 +88,7 @@
       "on_screen": "6 YEARS INSIDE",
       "best_for": "Authority without a credential slide. Works only if the years are real.",
       "trap": "Promising a secret and delivering the brochure. The comments are merciless about this one.",
-      "match": "\\bi (?:spent|worked|ran|was|have been)\\b[^.!?]*\\b\\d+\\s*\\+?\\s*years?\\b|\\bwe never (?:told|said|showed)\\b|\\bnobody (?:puts|tells you about)\\b|\\bi (?:sell|sold|run)\\b[^.!?]*\\$\\s?\\d"
+      "match": "\\bi (?:spent|worked|ran|was|have been)\\b[^.!?]*\\b(?:\\d+|(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty))\\s*\\+?\\s*years?\\b|\\bwe never (?:told|said|showed|put|wrote|admitted)\\b|\\bnobody (?:puts|tells you about)\\b|\\bi (?:sell|sold|run)\\b[^.!?]*\\$\\s?\\d"
     },
     {
       "id": 9,
@@ -118,7 +118,7 @@
       "on_screen": "5 EDITS. #4 IS THE ONE.",
       "best_for": "Retention through the middle: naming a favourite gives people a reason to stay past three.",
       "trap": "N above seven. Nobody believes you have nine good ones, and you do not.",
-      "match": "^\\s*(?:here are\\s+)?\\d+\\s+\\w+|\\bnumber \\d+\\b|\\b(?:three|four|five|seven|ten)\\s+\\w+\\s+(?:every|that|you)\\b"
+      "match": "^\\s*(?:here are\\s+)?(?:\\d+|(?:two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty))\\s+\\w+|\\bnumber (?:\\d+|(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty))\\b|\\b(?:two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty)\\s+(?:\\w+\\s+){1,2}(?:every|that|you)\\b"
     },
     {
       "id": 12,
@@ -128,7 +128,7 @@
       "on_screen": "\"I HATE BEING ON CAMERA\"",
       "best_for": "Selling to the people who already said no once.",
       "trap": "Inventing the objection. Pull it verbatim from a DM or a comment, including the bad grammar.",
-      "match": "^\\s*[\\\"“'][^\\\"”']{5,120}[\\\"”'][,.]?\\s*(?:fine|ok|okay|sure|right|here)"
+      "match": "^\\s*[\\\"“'][^\\\"”]{5,120}[\\\"”'][,.]?\\s*(?:fine|ok|okay|sure|right|here)"
     },
     {
       "id": 13,
@@ -148,7 +148,7 @@
       "on_screen": "PHOTOGRAPHERS UNDER $2K",
       "best_for": "Cutting a broad audience down to the one that converts. Send rate goes up because people tag each other.",
       "trap": "A group so large it is not a callout. 'Entrepreneurs' is not a group.",
-      "match": "^\\s*(?:every|all|any)\\s+\\w+|^\\s*[a-z][\\w ]{2,28}(?:ers|ists|ors|ants)\\b\\s*[,:]|^\\s*for (?:viewers|people|anyone|those|everyone)\\b|^\\s*(?:attention|listen up)\\b"
+      "match": "^\\s*(?:every|all|any)\\s+\\w+|^\\s*[a-z][\\w ]{2,28}(?:ers|ists|ors|ants)\\b[^.!?:]{0,40}[,:]|^\\s*for (?:viewers|people|anyone|those|everyone)\\b|^\\s*(?:attention|listen up)\\b"
     },
     {
       "id": 15,
@@ -198,7 +198,7 @@
       "on_screen": "BEFORE YOU POST AGAIN",
       "best_for": "Urgency that is real. Platform changes, seasonal windows, policy updates.",
       "trap": "Manufactured urgency. One fake deadline and every future one is discounted.",
-      "match": "\\bbefore (?:you|it|they|the)\\b[^.!?]*\\b(?:change|changes|end|ends|close|closes|expires|goes)\\b|\\bchanges on\\b|\\bby 20\\d\\d\\b"
+      "match": "\\bbefore (?:you|it|they|the)\\b[^.!?]*\\b(?:change|changes|end|ends|close|closes|expires|goes)\\b|\\bchanges on\\b|\\bthe (?:second|moment|minute) you\\b|\\b(?:change|changes)\\s+the\\s+(?:second|moment|minute|day)\\b|\\bby 20\\d\\d\\b"
     },
     {
       "id": 20,
@@ -269,6 +269,16 @@
       "best_for": "One-claim videos with no story attached. It is the most common shape in the wild and the easiest to write badly.",
       "trap": "A superlative with a soft answer. If the second half is 'consistency', you have said nothing and the comments will tell you.",
       "match": "^\\s*(?:the\\s+)?(?:fastest|quickest|best|worst|biggest|greatest|easiest|hardest|only|number one|#1|most important)\\s+\\w+|\\bthe (?:fastest|best|worst|biggest|greatest|only) way to\\b"
+    },
+    {
+      "id": 27,
+      "name": "Second-Person Diagnosis",
+      "template": "Your {thing they own} is {bad state} {right now / and you do not know it}.",
+      "example": "Your app can cost you $100K before its first sale.",
+      "on_screen": "YOUR APP IS LEAKING",
+      "best_for": "Cold reach. It conscripts the viewer before they have decided whether they care about the topic, because the subject of the sentence is something they own.",
+      "trap": "Diagnosing something the viewer does not own. 'Your enterprise data lake' dies on a feed of hobbyists. Also: no consequence. 'Your prompts are long' is an observation, not a diagnosis.",
+      "match": "^(?:your|you(?:'re|’re| are)?)\\b[^.!?]{0,60}\\b(?:is|are|can|will|have|hit|cost|costing|pay|paying|leak|leaking|break|breaking|lose|losing|run|running|need|needs|does not need|doesn'?t need)\\b"
     }
   ],
   "classify_order": [
@@ -297,6 +307,7 @@
     21,
     22,
     11,
-    14
+    14,
+    27
   ]
 }

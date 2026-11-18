@@ -32,6 +32,13 @@ import unicodedata
 HERE = os.path.dirname(os.path.abspath(__file__))
 LEX = os.path.join(HERE, "slop.json")
 
+try:                                              # same exceptions as the cleaner
+    sys.path.insert(0, HERE)
+    from humanize import legit_format_positions   # noqa: E402
+except Exception:                                 # detect.py copied on its own
+    def legit_format_positions(text):
+        return set()
+
 SENT_RE = re.compile(r"[^.!?\n]+[.!?]*")
 WORD_RE = re.compile(r"[A-Za-z']+")
 CONTRACTIONS = re.compile(r"\b\w+'(?:s|t|re|ve|ll|d|m)\b", re.IGNORECASE)
@@ -105,7 +112,8 @@ def check_slop(text, lex):
 
 def check_fingerprint(text):
     """Characters a phone keyboard does not produce."""
-    invisible = sum(1 for c in text if unicodedata.category(c) == "Cf")
+    keep = legit_format_positions(text)
+    invisible = sum(1 for i, c in enumerate(text) if unicodedata.category(c) == "Cf" and i not in keep)
     em = text.count("—")
     curly = sum(text.count(c) for c in "‘’“”")
     ellip = text.count("…")
@@ -197,6 +205,12 @@ def main():
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--lexicon", default=LEX)
     args = ap.parse_args()
+
+    # Windows pipes default to the ANSI code page (cp1252), which cannot print
+    # an emoji and misreads UTF-8 input. Read and write UTF-8 everywhere.
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
 
     lex = json.load(open(args.lexicon, encoding="utf-8"))
     read = lambda p: sys.stdin.read() if p == "-" else open(p, encoding="utf-8").read()

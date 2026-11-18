@@ -1,7 +1,7 @@
 ---
 name: ig-reel
 description: >-
-  Write an Instagram Reel from a raw idea - hook options off 26 formulas, the
+  Write an Instagram Reel from a raw idea - hook options off 27 formulas, the
   spoken script, the on-screen text, and a timed beat sheet - in the user's own
   voice and scored before they shoot it. Use whenever the user wants a Reel, a
   short-form video script, a hook, a voiceover, "make a reel about X", "what
@@ -10,6 +10,8 @@ description: >-
 ---
 
 # ig-reel
+
+For Turkish-language requests, read [SKILL.tr.md](SKILL.tr.md). The translation documents the existing English-first tool limitations; it does not change the scripts.
 
 Turns one raw idea into a Reel that somebody finishes.
 
@@ -29,7 +31,7 @@ python3 beats.py script.txt --target 30     # timed beat sheet before you shoot
    to. If it does not exist, ask for **three of their own reels**, transcribe or
    read them, infer the voice, and write the file. A script in the wrong voice
    is unusable, because they have to say it out loud.
-2. Read `hooks.json` in this folder. 26 formulas, each with a template, a filled
+2. Read `hooks.json` in this folder. 27 formulas, each with a template, a filled
    example, the on-screen version, what it is for, and how it gets ruined.
    Four of them are in there because they kept turning up in real hooks, not
    because they completed a pattern.
@@ -73,20 +75,33 @@ rehearse.
 
 **4. Time it.** Run `beats.py script.txt --target {length}`. Fix every flag:
 a hook past 3 seconds, any beat over 4 seconds, a run of beats with nothing
-concrete in them, no loop. Re-run until it is clean.
+concrete in them, no loop. Re-run until it is clean. The loop check compares
+the last beat with beat 1 only, so if the hook is split across two lines, echo
+a word from the first of them.
 
 **5. Humanize it.** Run the script through `/ig-human` before showing it. A
 written-sounding line is obvious the moment someone says it out loud.
+
+Expect REVIEW, not PASS, from `detect.py` on a script that passed step 4, and
+do not distort the script to chase PASS. `beats.py` holds a beat to about 11
+words and `detect.py` ignores lines of two words or fewer, so the sentence
+lengths it measures sit between 3 and 11 words. Natural scripts in that range
+vary by 0.25 to 0.35, well under the 0.48 BURSTINESS needs to clear 55 (three
+short-beat test scripts scored 6 to 22 on it, 51 to 60 overall). Getting there
+means alternating 3-word and 11-word lines, which is writing to the scorer.
+Fix what the other four checks find and report BURSTINESS as low for this
+format.
 
 **6. Print the block.** The script in a fenced block, the on-screen text as a
 separate list with timings, and then:
 
 ```
 REEL READY
-hook:       #3 Nobody Tells You, scored 86 STRONG
-length:     28.4s across 9 beats at 165 wpm
+hook:       #5 Time Collapse, scored 80.8 STRONG
+length:     24.4s across 10 beats at 165 wpm, loops on "proposals"
 on-screen:  6 cards
-humanizer:  4 artefacts stripped, human score 81 PASS
+humanizer:  0 artefacts stripped, human score 53.8 REVIEW
+            (burstiness 11, normal for a beat-split script; other four 100)
 caption:    run /ig-caption next
 
 Reply "yes" to log it, or tell me what to change.
@@ -114,7 +129,7 @@ Write it separately, every time. It is read before it is heard.
 ## Rules that make the difference
 
 - **One idea per Reel.** If the script has two, you have two Reels. Say so.
-- **Numbers over adjectives.** "$4,200" beats "a lot". If the user has not
+- **Numbers over adjectives.** "\$4,200" beats "a lot". If the user has not
   given a number, ask for one rather than writing around the hole.
 - **Cut the intro.** No greeting, no "in this video", no name, no logo sting.
   The video starts at the sentence you would normally reach at second six.
@@ -133,15 +148,27 @@ Write it separately, every time. It is read before it is heard.
 /ig-reel we cut proposal time from 5 hours to 20 minutes with one template
 ```
 
+First pass, as `hookscore.py` actually scores it:
+
+```
+  54.8  OK    #1  Cost Confession "I billed four hours a week for formatting. For two years."
+  51.2  OK    #5  Time Collapse   "Proposals used to take me five hours. Twenty minutes now."
+  36.6  WEAK  #9  The Steal       "Steal the proposal template that did it."
+```
+
+All three are weakest on STAKES (20). One tension word each fixes it:
+
 ```
 HOOKS  (scored)
-  86  STRONG  #5  Time Collapse   "Proposals used to take me five hours. Twenty minutes now."
-                                  on screen: 5 HOURS -> 20 MIN
-  71  STRONG  #1  Cost Confession "I billed four hours a week for formatting. For two years."
-                                  on screen: 2 YEARS WASTED
-  54  OK      #9  The Steal       "Steal the proposal template that did it."
-                                  on screen: STEAL THIS
+  80.8  STRONG  #5  Time Collapse   "Proposals took me five hours. I cut them to twenty minutes."
+                                    on screen: 5 HOURS -> 20 MIN
+  79.4  STRONG  #1  Cost Confession "I wasted four hours a week formatting proposals. For two years."
+                                    on screen: 2 YEARS WASTED
+  76.8  STRONG  #9  The Steal       "Steal the template that cut my proposals from five hours to twenty minutes."
+                                    on screen: STEAL THIS
 
 Shooting #5: the ratio is believable, it reads in one glance on screen,
-and the number is yours.
+and the number is yours. The three are within 4 points, and the scorer does
+not separate decent hooks well (AUC 0.56 on hits against misses), so the
+choice is judgement, not score.
 ```

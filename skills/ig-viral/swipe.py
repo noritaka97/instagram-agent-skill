@@ -179,6 +179,12 @@ def main():
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
 
+    # Windows pipes default to the ANSI code page (cp1252), which cannot print
+    # an emoji and misreads UTF-8 input. Read and write UTF-8 everywhere.
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
+
     rows = read_rows(args.input)
     if not rows:
         print("no usable rows. Need a tab-separated file with at least views and hook.",
@@ -197,7 +203,8 @@ def main():
         render(a)
     if args.out:
         path = os.path.expanduser(args.out)
-        os.makedirs(os.path.dirname(path), exist_ok=True)
+        if os.path.dirname(path):
+            os.makedirs(os.path.dirname(path), exist_ok=True)
         open(path, "w", encoding="utf-8").write(to_markdown(a))
         print(f"wrote {path}", file=sys.stderr)
 

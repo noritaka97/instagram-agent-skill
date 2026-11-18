@@ -43,7 +43,9 @@ NUMBER_RE = re.compile(
     r"(?:%|k\b|x\b|hrs?\b|hours?\b|mins?\b|minutes?\b"  # without a unit
     r"|days?\b|weeks?\b|months?\b|years?\b)?",
     re.IGNORECASE)
-PROPER_RE = re.compile(r"(?<!^)\b[A-Z][a-z]{2,}\b")
+# A capitalised word that starts a sentence ("Now", "Never") is not a name,
+# so skip the start of the line and anything right after . ! or ?
+PROPER_RE = re.compile(r"(?<!^)(?<![.!?]\s)\b[A-Z][a-z]{2,}\b")
 HASHTAG_RE = re.compile(r"(?:^|\s)#\w+")
 EMOJI_RE = re.compile(r"[\U0001F300-\U0001FAFF☀-➿]")
 
@@ -172,7 +174,10 @@ def check_frontload(text):
     penalty = 0
     hit_opener = None
     for weak in WEAK_OPENERS:
-        if opener.startswith(weak) or low[0] == weak:
+        # Whole words only. A bare prefix let "yo" catch "you" and "your", and
+        # "so" catch "some". A trailing apostrophe still counts, so "today's"
+        # and "let's" are caught as before.
+        if re.match(re.escape(weak) + r"(?=$|[\s'’])", opener):
             penalty, hit_opener = 30, weak
             break
     payload = None
@@ -274,6 +279,12 @@ def main():
     ap.add_argument("--hook", help="score a single hook given on the command line")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
+
+    # Windows pipes default to the ANSI code page (cp1252), which cannot print
+    # an emoji and misreads UTF-8 input. Read and write UTF-8 everywhere.
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
 
     if args.hook:
         lines = [args.hook]
